@@ -1,9 +1,10 @@
+import json
+
 from models import *
 from config import db
 
 
 def put_user_data(input_data):
-
     for row in input_data:
         db.session.add(
             User(
@@ -21,7 +22,6 @@ def put_user_data(input_data):
 
 
 def put_order_data(input_data):
-
     for row in input_data:
         db.session.add(
             Order(
@@ -34,7 +34,44 @@ def put_order_data(input_data):
                 price=row.get('price'),
                 customer_id=row.get('customer_id'),
                 executor_id=row.get('executor_id')
-                )
             )
+        )
 
-        db.session.commit()
+    db.session.commit()
+
+
+def put_offer_data(input_data):
+    for row in input_data:
+        db.session.add(
+            Offer(
+                id=row.get('id'),
+                order_id=row.get('order_id'),
+                executor_id=row.get('executor_id')
+            )
+        )
+
+    db.session.commit()
+
+
+def get_all_users():
+    result = []
+    for row in User.query.all():
+        result.append(row.to_dict())
+    return result
+
+
+
+def init_db():
+    db.drop_all()
+    db.create_all()
+    with open("data/Users.json", encoding='utf-8') as file:
+        data = json.load(file)
+        put_user_data(data)
+
+    with open("data/Orders.json", encoding='utf-8') as file:
+        data = json.load(file)
+        put_order_data(data)
+
+    with open("data/Offers.json") as file:
+        data = json.load(file)
+        put_offer_data(data)
