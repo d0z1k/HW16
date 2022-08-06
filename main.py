@@ -1,7 +1,8 @@
 import json
 from flask import request
 from config import app
-from service import init_db, get_all_users, get_all_orders, get_all_offers, put_user_data
+from models import User
+from service import init_db, get_all_users, get_all_orders, get_all_offers, put_user_data, update_user
 
 
 @app.route('/users/', methods=['GET', 'POST'])
@@ -20,22 +21,30 @@ def get_users():
             put_user_data([request.json])
 
     return app.response_class(
-            response=json.dumps(request.json),
+        response=json.dumps(request.json),
+        status=200,
+        mimetype='application/json'
+    )
+
+
+@app.route('/users/<int:user_id>', methods=['GET', 'PUT'])
+def get_user(user_id):
+    if request.method == 'GET':
+        data = get_all_users()
+        for row in data:
+            if row.get('id') == user_id:
+                return app.response_class(
+                    response=json.dumps(row),
+                    status=200,
+                    mimetype='application/json'
+                )
+    elif request.method == 'PUT':
+        update_user(User, user_id, request.json)
+        return app.response_class(
+            response=json.dumps(["OK"]),
             status=200,
             mimetype='application/json'
-            )
-
-
-@app.route('/users/<int:user_id>', methods=['GET'])
-def get_user(user_id):
-    data = get_all_users()
-    for row in data:
-        if row.get('id') == user_id:
-            return app.response_class(
-                response=json.dumps(row),
-                status=200,
-                mimetype='application/json'
-            )
+        )
 
 
 @app.route('/orders', methods=['GET'])

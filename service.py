@@ -88,3 +88,19 @@ def init_db():
     with open("data/Offers.json") as file:
         data = json.load(file)
         put_offer_data(data)
+
+
+def update_user(model, user_id, values):
+    try:
+        data = db.session.query(model).get(user_id)
+        data.id = values.get('id')
+        data.first_name = values.get('first_name')
+        data.last_name = values.get('last_name')
+        data.age = values.get('age')
+        data.email = values.get('email')
+        data.role = values.get('role')
+        data.phone = values.get('phone')
+
+        db.session.commit()
+    except Exception:
+        return {}
