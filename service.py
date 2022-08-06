@@ -60,6 +60,19 @@ def get_all_users():
     return result
 
 
+def get_all_orders():
+    result = []
+    for row in Order.query.all():
+        result.append(row.to_dict())
+    return result
+
+
+def get_all_offers():
+    result = []
+    for row in Offer.query.all():
+        result.append(row.to_dict())
+    return result
+
 
 def init_db():
     db.drop_all()
