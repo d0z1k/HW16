@@ -5,6 +5,11 @@ from config import db
 
 
 def put_user_data(input_data):
+    """
+    Puts the user data into the database.
+    :param input_data:
+    :return:
+    """
     for row in input_data:
         db.session.add(
             User(
@@ -22,6 +27,11 @@ def put_user_data(input_data):
 
 
 def put_order_data(input_data):
+    """
+    Puts the order data in db
+    :param input_data:
+    :return:
+    """
     for row in input_data:
         db.session.add(
             Order(
@@ -41,6 +51,11 @@ def put_order_data(input_data):
 
 
 def put_offer_data(input_data):
+    """
+    Puts the offer data in db
+    :param input_data:
+    :return:
+    """
     for row in input_data:
         db.session.add(
             Offer(
@@ -54,6 +69,10 @@ def put_offer_data(input_data):
 
 
 def get_all_users():
+    """
+    Загружает всех пользователей из БД
+    :return:
+    """
     result = []
     for row in User.query.all():
         result.append(row.to_dict())
@@ -61,6 +80,10 @@ def get_all_users():
 
 
 def get_all_orders():
+    """
+    Загружает все заказы из БД
+    :return:
+    """
     result = []
     for row in Order.query.all():
         result.append(row.to_dict())
@@ -68,6 +91,10 @@ def get_all_orders():
 
 
 def get_all_offers():
+    """
+    Загружает все предложения из БД
+    :return:
+    """
     result = []
     for row in Offer.query.all():
         result.append(row.to_dict())
@@ -75,6 +102,10 @@ def get_all_offers():
 
 
 def init_db():
+    """
+    Запуск БД
+    :return:
+    """
     db.drop_all()
     db.create_all()
     with open("data/Users.json", encoding='utf-8') as file:
@@ -91,6 +122,10 @@ def init_db():
 
 
 def update_user(model, user_id, values):
+    """
+    Обновляет инфо о юзере по ID
+
+    """
     try:
         data = db.session.query(model).get(user_id)
         data.id = values.get('id')
@@ -108,6 +143,10 @@ def update_user(model, user_id, values):
 
 
 def update_order(model, order_id, values):
+    """
+    Обновляет инфо о заказе по ID
+
+    """
     try:
         data = db.session.query(model).get(order_id)
         data.id = values.get('id')
@@ -127,6 +166,10 @@ def update_order(model, order_id, values):
 
 
 def update_offer(model, offer_id, values):
+    """
+    Обновляет инфо о предложении по ID
+
+    """
     try:
         data = db.session.query(model).get(offer_id)
         data.id = values.get('id')
@@ -141,6 +184,9 @@ def update_offer(model, offer_id, values):
 
 
 def delete_user(model, user_id):
+    """
+    Удаляет Юзера по ID
+    """
     try:
         db.session.query(model).filter(model.id == user_id).delete()
 
@@ -151,6 +197,9 @@ def delete_user(model, user_id):
 
 
 def delete_order(model, order_id):
+    """
+    Удаляет заказ по ID
+    """
     try:
         db.session.query(model).filter(model.id == order_id).delete()
 
@@ -161,6 +210,9 @@ def delete_order(model, order_id):
 
 
 def delete_offer(model, offer_id):
+    """
+    Удаляет предложение по ID
+    """
     try:
         db.session.query(model).filter(model.id == offer_id).delete()
 
