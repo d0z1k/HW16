@@ -102,7 +102,8 @@ def update_user(model, user_id, values):
         data.phone = values.get('phone')
 
         db.session.commit()
-    except Exception:
+    except Exception as e:
+        print(e)
         return {}
 
 
@@ -120,7 +121,8 @@ def update_order(model, order_id, values):
         data.executor_id = values.get('executor_id')
 
         db.session.commit()
-    except Exception:
+    except Exception as e:
+        print(e)
         return {}
 
 
@@ -133,5 +135,36 @@ def update_offer(model, offer_id, values):
         data.executor_id = values.get('executor_id')
 
         db.session.commit()
-    except Exception:
+    except Exception as e:
+        print(e)
+        return {}
+
+
+def delete_user(model, user_id):
+    try:
+        db.session.query(model).filter(model.id == user_id).delete()
+
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        return {}
+
+
+def delete_order(model, order_id):
+    try:
+        db.session.query(model).filter(model.id == order_id).delete()
+
+        db.session.commit()
+    except Exception as e:
+        print(e)
+        return {}
+
+
+def delete_offer(model, offer_id):
+    try:
+        db.session.query(model).filter(model.id == offer_id).delete()
+
+        db.session.commit()
+    except Exception as e:
+        print(e)
         return {}

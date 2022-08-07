@@ -3,7 +3,7 @@ from flask import request
 from config import app
 from models import User, Order, Offer
 from service import init_db, get_all_users, get_all_orders, get_all_offers, put_user_data, update_user, update_order, \
-    update_offer, put_order_data, put_offer_data
+    update_offer, put_order_data, put_offer_data, delete_user, delete_order, delete_offer
 
 
 @app.route('/users/', methods=['GET', 'POST'])
@@ -20,15 +20,14 @@ def get_users():
             put_user_data(request.json)
         elif isinstance(request.json, dict):
             put_user_data([request.json])
+        return app.response_class(
+            response=json.dumps(get_all_users()),
+            status=200,
+            mimetype='application/json'
+            )
 
-    return app.response_class(
-        response=json.dumps(request.json),
-        status=200,
-        mimetype='application/json'
-    )
 
-
-@app.route('/users/<int:user_id>', methods=['GET', 'PUT'])
+@app.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def get_user(user_id):
     if request.method == 'GET':
         data = get_all_users()
@@ -46,6 +45,13 @@ def get_user(user_id):
             status=200,
             mimetype='application/json'
         )
+    elif request.method == 'DELETE':
+        delete_user(User, user_id)
+        return app.response_class(
+            response=json.dumps(["OK"]),
+            status=200,
+            mimetype='application/json'
+            )
 
 
 @app.route('/orders/', methods=['GET', 'POST'])
@@ -63,14 +69,14 @@ def get_orders():
         elif isinstance(request.json, dict):
             put_order_data([request.json])
 
-    return app.response_class(
-        response=json.dumps(request.json),
-        status=200,
-        mimetype='application/json'
-    )
+            return app.response_class(
+                response=json.dumps(request.json),
+                status=200,
+                mimetype='application/json'
+            )
 
 
-@app.route('/orders/<int:order_id>', methods=['GET', 'PUT'])
+@app.route('/orders/<int:order_id>', methods=['GET', 'PUT', 'DELETE'])
 def get_order(order_id):
     if request.method == 'GET':
         data = get_all_orders()
@@ -88,6 +94,13 @@ def get_order(order_id):
             status=200,
             mimetype='application/json'
         )
+    elif request.method == 'DELETE':
+        delete_order(Order, order_id)
+        return app.response_class(
+            response=json.dumps(["OK"]),
+            status=200,
+            mimetype='application/json'
+            )
 
 
 @app.route('/offers/', methods=['GET', 'POST'])
@@ -112,7 +125,7 @@ def get_offers():
     )
 
 
-@app.route('/offers/<int:offer_id>', methods=['GET', 'PUT'])
+@app.route('/offers/<int:offer_id>', methods=['GET', 'PUT', 'DELETE'])
 def get_offer(offer_id):
     if request.method == 'GET':
         data = get_all_offers()
@@ -130,6 +143,13 @@ def get_offer(offer_id):
             status=200,
             mimetype='application/json'
         )
+    elif request.method == 'DELETE':
+        delete_offer(Offer, offer_id)
+        return app.response_class(
+            response=json.dumps(["OK"]),
+            status=200,
+            mimetype='application/json'
+            )
 
 
 if __name__ == '__main__':
