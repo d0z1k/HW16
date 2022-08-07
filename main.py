@@ -1,8 +1,9 @@
 import json
 from flask import request
 from config import app
-from models import User
-from service import init_db, get_all_users, get_all_orders, get_all_offers, put_user_data, update_user
+from models import User, Order, Offer
+from service import init_db, get_all_users, get_all_orders, get_all_offers, put_user_data, update_user, update_order, \
+    update_offer, put_order_data, put_offer_data
 
 
 @app.route('/users/', methods=['GET', 'POST'])
@@ -47,48 +48,88 @@ def get_user(user_id):
         )
 
 
-@app.route('/orders', methods=['GET'])
+@app.route('/orders/', methods=['GET', 'POST'])
 def get_orders():
-    get_all_orders()
+    if request.method == 'GET':
+        get_all_orders()
+        return app.response_class(
+            response=json.dumps(get_all_orders()),
+            status=200,
+            mimetype='application/json'
+        )
+    elif request.method == 'POST':
+        if isinstance(request.json, list):
+            put_order_data(request.json)
+        elif isinstance(request.json, dict):
+            put_order_data([request.json])
+
     return app.response_class(
-        response=json.dumps(get_all_orders()),
+        response=json.dumps(request.json),
         status=200,
         mimetype='application/json'
     )
 
 
-@app.route('/orders/<int:order_id>', methods=['GET'])
+@app.route('/orders/<int:order_id>', methods=['GET', 'PUT'])
 def get_order(order_id):
-    data = get_all_orders()
-    for row in data:
-        if row.get('id') == order_id:
-            return app.response_class(
-                response=json.dumps(row),
-                status=200,
-                mimetype='application/json'
-            )
+    if request.method == 'GET':
+        data = get_all_orders()
+        for row in data:
+            if row.get('id') == order_id:
+                return app.response_class(
+                    response=json.dumps(row),
+                    status=200,
+                    mimetype='application/json'
+                )
+    elif request.method == 'PUT':
+        update_order(Order, order_id, request.json)
+        return app.response_class(
+            response=json.dumps(["OK"]),
+            status=200,
+            mimetype='application/json'
+        )
 
 
-@app.route('/offers', methods=['GET'])
+@app.route('/offers/', methods=['GET', 'POST'])
 def get_offers():
-    get_all_offers()
+    if request.method == 'GET':
+        get_all_offers()
+        return app.response_class(
+            response=json.dumps(get_all_offers()),
+            status=200,
+            mimetype='application/json'
+        )
+    elif request.method == 'POST':
+        if isinstance(request.json, list):
+            put_offer_data(request.json)
+        elif isinstance(request.json, dict):
+            put_offer_data([request.json])
+
     return app.response_class(
-        response=json.dumps(get_all_offers()),
+        response=json.dumps(request.json),
         status=200,
         mimetype='application/json'
     )
 
 
-@app.route('/offers/<int:offer_id>', methods=['GET'])
+@app.route('/offers/<int:offer_id>', methods=['GET', 'PUT'])
 def get_offer(offer_id):
-    data = get_all_offers()
-    for row in data:
-        if row.get('id') == offer_id:
-            return app.response_class(
-                response=json.dumps(row),
-                status=200,
-                mimetype='application/json'
-            )
+    if request.method == 'GET':
+        data = get_all_offers()
+        for row in data:
+            if row.get('id') == offer_id:
+                return app.response_class(
+                    response=json.dumps(row),
+                    status=200,
+                    mimetype='application/json'
+                )
+    elif request.method == 'PUT':
+        update_offer(Offer, offer_id, request.json)
+        return app.response_class(
+            response=json.dumps(["OK"]),
+            status=200,
+            mimetype='application/json'
+        )
 
 
 if __name__ == '__main__':

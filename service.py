@@ -104,3 +104,34 @@ def update_user(model, user_id, values):
         db.session.commit()
     except Exception:
         return {}
+
+
+def update_order(model, order_id, values):
+    try:
+        data = db.session.query(model).get(order_id)
+        data.id = values.get('id')
+        data.name = values.get('name')
+        data.description = values.get('description')
+        data.start_date = values.get('start_date')
+        data.end_date = values.get('end_date')
+        data.address = values.get('address')
+        data.price = values.get('price')
+        data.customer_id = values.get('customer_id')
+        data.executor_id = values.get('executor_id')
+
+        db.session.commit()
+    except Exception:
+        return {}
+
+
+def update_offer(model, offer_id, values):
+    try:
+        data = db.session.query(model).get(offer_id)
+        data.id = values.get('id')
+        data.id = values.get('id')
+        data.order_id = values.get('order_id')
+        data.executor_id = values.get('executor_id')
+
+        db.session.commit()
+    except Exception:
+        return {}
